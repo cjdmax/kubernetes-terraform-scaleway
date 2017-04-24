@@ -6,6 +6,10 @@ The default configuration includes Kubernetes
 [add-ons](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons):
 DNS, Dashboard and UI.
 
+## Prerequisites
+
+* appropriate ssh keys set up in Scaleway credentials
+
 ## Getting started:
 Clone or download repo.
 
@@ -29,3 +33,4 @@ Access the dashboard and api via the following address:
 
 - API: `http://localhost:8001/api/v1`
 - Dashboard: `http://localhost:8001/ui`
+

@@ -12,6 +12,7 @@ echo "DOCKER_OPTS='-H unix:///var/run/docker.sock --storage-driver aufs --label 
 systemctl restart docker
 
 apt-get update -qq \
+ && apt-get install apt-transport-https \
  && apt-get install -y -q --no-install-recommends kubelet kubeadm kubectl kubernetes-cni \
  && apt-get clean
 

@@ -1,16 +1,13 @@
 variable "organization_key" {
   description = "Scaleway access_key"
-  default = "00000000-0000-0000-0000-000000000000"
 }
 
 variable "secret_key" {
   description = "Scaleway secret_key"
-  default = "00000000-0000-0000-0000-000000000000"
 }
 
 variable "region" {
   description = "Scaleway region: Paris (PAR1) or Amsterdam (AMS1)"
-  default = "ams1"
 }
 
 variable "user" {
@@ -23,47 +20,35 @@ variable "dynamic_ip" {
   default = "true"
 }
 
-variable "bootscript_id" {
-  description = "Scaleway bootscript ID"
-  default = "00000000-0000-0000-0000-000000000000"
+variable "scaleway_image_arch" {
+  description = "Scaleway Imagehub architecture"
 }
 
-variable "base_image_id" {
-  description = "Scaleway image ID"
-  default = "00000000-0000-0000-0000-000000000000"
+variable "scaleway_image_name" {
+  description = "Scaleway Imagehub name"
+}
+
+variable "scaleway_bootscript" {
+  description = "Scaleway Bootscript"
 }
 
 variable "scaleway_slave_type" {
   description = "Instance type of Slave"
-  default = "VC1S"
 }
 
 variable "scaleway_master_type" {
   description = "Instance type of Master"
-  default = "VC1S"
 }
 
 variable "kubernetes_cluster_name" {
   description = "Name of your cluster. Alpha-numeric and hyphens only, please."
-  default = "scaleway-kubernetes"
 }
 
 variable "kubernetes_slave_count" {
   description = "Number of agents to deploy"
-  default = "4"
+  default = "3"
 }
 
 variable "kubernetes_token" {
   description = "Token used to secure cluster boostrap"
-  default = "cef4cf.a9e2d6e46c2d4d49"
-}
-
-variable "kubernetes_ssh_public_key_path" {
-  description = "Path to your public SSH key path"
-  default = "./scw.pub"
-}
-
-variable "kubernetes_ssh_key_path" {
-  description = "Path to your private SSH key for the project"
-  default = "./scw"
 }
