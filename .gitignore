@@ -6,3 +6,5 @@
 !sample.terraform.tfvars
 !vars.tf
 !README.md
+ansible/hosts
+ansible/*

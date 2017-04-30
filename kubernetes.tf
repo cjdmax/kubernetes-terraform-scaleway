@@ -3,8 +3,6 @@ provider "scaleway" {
   token = "${var.secret_key}"
   region = "${var.region}"
 }
-
-# todo security groups
 # todo private nodes
 
 data "scaleway_image" "baseimage" {
@@ -27,7 +25,6 @@ resource "scaleway_server" "kubernetes_master" {
   connection {
     user = "${var.user}"
   }
-
 
   provisioner "local-exec" {
     command = "rm -rf ./scw-install.sh ./scw-install-master.sh"
@@ -56,6 +53,14 @@ resource "scaleway_server" "kubernetes_master" {
     inline = "KUBERNETES_TOKEN=\"${var.kubernetes_token}\" bash /tmp/scw-install.sh master"
   }
 
+  provisioner "local-exec" {
+    command = "ssh-keygen -f \"$HOME/.ssh/known_hosts\" -R ${self.public_ip}"
+  }
+
+  provisioner "local-exec" {
+    command = "ssh-keyscan -H ${self.id}.pub.cloud.scaleway.com,${self.public_ip} >> \"$HOME/.ssh/known_hosts\""
+  }
+
   tags = ["${var.kubernetes_cluster_name}", "${var.kubernetes_cluster_name}-master"]
 
 }
@@ -81,6 +86,32 @@ resource "scaleway_server" "kubernetes_slave" {
     inline = "KUBERNETES_TOKEN=\"${var.kubernetes_token}\" bash /tmp/scw-install.sh slave"
   }
   
+  provisioner "local-exec" {
+    command = "ssh-keygen -f \"$HOME/.ssh/known_hosts\" -R ${self.public_ip}"
+  }
+  provisioner "local-exec" {
+    command = "ssh-keyscan -H ${self.id}.pub.cloud.scaleway.com,${self.public_ip} >> \"$HOME/.ssh/known_hosts\""
+  }
+  
   tags = ["${var.kubernetes_cluster_name}", "${var.kubernetes_cluster_name}-slave"]
+}
+
+resource "null_resource" "ansible_provision" {
+  depends_on = [ "scaleway_server.kubernetes_master", "scaleway_server.kubernetes_slave" ]
+
+  triggers { 
+    cluster_instance_ids = "${join(",", scaleway_server.kubernetes_master.*.id, scaleway_server.kubernetes_slave.*.id)}"
+  }
+
+  provisioner "local-exec" {
+    command = "echo \"[masters]\n${join("\n",formatlist("%s ansible_ssh_user=root ansible_ssh_host=%s", scaleway_server.kubernetes_master.*.name, scaleway_server.kubernetes_master.*.public_ip))}\" > ansible/hosts"
+  }
+  provisioner "local-exec" {
+    command = "echo \"[slaves]\n${join("\n",formatlist("%s ansible_ssh_user=root ansible_ssh_host=%s", scaleway_server.kubernetes_slave.*.name, scaleway_server.kubernetes_slave.*.public_ip))}\" >> ansible/hosts"
+  }
+  provisioner "local-exec" {
+    command = "echo \"\n[all:children]\nmasters\nslaves\" >> ansible/hosts"
+  }
+
 }
 

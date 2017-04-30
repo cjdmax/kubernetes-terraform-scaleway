@@ -1,0 +1,3 @@
+[submodule "ansible/roles/harden-linux"]
+	path = ansible/roles/harden-linux
+	url = https://github.com/githubixx/ansible-role-harden-linux.git

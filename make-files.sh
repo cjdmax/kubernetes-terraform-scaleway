@@ -9,17 +9,17 @@ deb http://apt.kubernetes.io/ kubernetes-xenial main
 EOF
 
 apt-get update -qq \
- && apt-get install apt-transport-https \
+ && apt-get -qq install apt-transport-https \
 
 # we are installing this one because it is supported by kube-admin, newer CE ones are not (yet?)
-apt-get install docker-engine=1.12.6-0~ubuntu-xenial
+apt-get -qq install docker-engine=1.12.6-0~ubuntu-xenial
 apt-mark hold docker-engine
 
 echo "DOCKER_OPTS='-H unix:///var/run/docker.sock --storage-driver aufs --label provider=scaleway --mtu=1500 --insecure-registry=10.0.0.0/8'" > /etc/default/docker
 systemctl restart docker
 
 apt-get update -qq \
- && apt-get install -y -q --no-install-recommends kubelet kubeadm kubectl kubernetes-cni \
+ && apt-get install -y -qq --no-install-recommends kubelet kubeadm kubectl kubernetes-cni \
  && apt-get clean
 
 for arg in "\$@"
@@ -33,7 +33,7 @@ do
       kubeadm --token=\$KUBERNETES_TOKEN --apiserver-advertise-address=\$PUBLIC_IP --service-dns-domain=\$SUID.pub.cloud.scaleway.com init
 
       KUBECONFIG=/etc/kubernetes/admin.conf kubectl apply -f http://docs.projectcalico.org/v2.1/getting-started/kubernetes/installation/hosted/kubeadm/1.6/calico.yaml
-      git clone https://github.com/kubernetes/heapster.git
+      git clone -q https://github.com/kubernetes/heapster.git
       KUBECONFIG=/etc/kubernetes/admin.conf kubectl create -f heapster/deploy/kube-config/influxdb/
       KUBECONFIG=/etc/kubernetes/admin.conf kubectl create -f https://rawgit.com/kubernetes/dashboard/master/src/deploy/kubernetes-dashboard.yaml
       break

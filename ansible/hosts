@@ -1,0 +1,9 @@
+[masters]
+scalek8s-master-00 ansible_ssh_user=root ansible_ssh_host=51.15.66.181
+[slaves]
+scalek8s-slave-00 ansible_ssh_user=root ansible_ssh_host=51.15.75.54
+scalek8s-slave-01 ansible_ssh_user=root ansible_ssh_host=51.15.66.229
+
+[all:children]
+masters
+slaves

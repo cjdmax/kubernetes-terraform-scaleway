@@ -1,0 +1,7 @@
+common_required_packages:
+  - ufw
+  - sshguard
+  - unattended-upgrades
+
+ufw_allow_ports:
+  - 22
